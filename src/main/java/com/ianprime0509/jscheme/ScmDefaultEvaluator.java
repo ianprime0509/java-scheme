@@ -8,7 +8,6 @@ import com.ianprime0509.jscheme.types.ScmSymbol;
 import com.ianprime0509.jscheme.types.ScmValue;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 class ScmDefaultEvaluator implements ScmManagedEvaluator {
@@ -18,7 +17,8 @@ class ScmDefaultEvaluator implements ScmManagedEvaluator {
   public ScmValue evaluate(final ScmValue expression, final ScmEnvironment evaluationEnvironment) {
     final ScmExecutionManager executionManager =
         ScmExecutionManager.newDefaultExecutionManager(this);
-    final Result result = evaluateInternal(expression, executionManager, evaluationEnvironment, null);
+    final Result result =
+        evaluateInternal(expression, executionManager, evaluationEnvironment, null);
 
     if (result.isCompleted()) {
       return result.getCompleted();
@@ -29,7 +29,8 @@ class ScmDefaultEvaluator implements ScmManagedEvaluator {
   @Override
   public Result evaluateManaged(
       ScmValue expression, ScmExecutionManager executionManager, ScmStackFrame context) {
-    return evaluateInternal(expression, executionManager, context.getExecutionEnvironment(), context);
+    return evaluateInternal(
+        expression, executionManager, context.getExecutionEnvironment(), context);
   }
 
   private ScmValue evaluateFully(
@@ -37,13 +38,14 @@ class ScmDefaultEvaluator implements ScmManagedEvaluator {
       final ScmExecutionManager executionManager,
       final ScmEnvironment executionEnvironment,
       final ScmStackFrame context) {
-    final Result result = evaluateInternal(expression, executionManager, executionEnvironment, context);
+    final Result result =
+        evaluateInternal(expression, executionManager, executionEnvironment, context);
     if (result.isCompleted()) {
       return result.getCompleted();
     }
     return executionManager.execute(result.getContinuing());
   }
-  
+
   private Result evaluateInternal(
       final ScmValue expression,
       final ScmExecutionManager executionManager,
@@ -54,7 +56,8 @@ class ScmDefaultEvaluator implements ScmManagedEvaluator {
       if (!pair.isList()) {
         throw new IllegalArgumentException("cannot evaluate non-list pair");
       }
-      final ScmValue valueToApply = evaluateFully(pair.getCar(), executionManager, executionEnvironment, null);
+      final ScmValue valueToApply =
+          evaluateFully(pair.getCar(), executionManager, executionEnvironment, null);
       if (!(valueToApply instanceof ScmProcedure)) {
         throw new IllegalArgumentException("wrong type to apply: " + pair.getCar());
       }
@@ -64,23 +67,23 @@ class ScmDefaultEvaluator implements ScmManagedEvaluator {
       ScmValue remaining = pair.getCdr();
       while (remaining instanceof ScmPair) {
         final ScmPair remainingPair = (ScmPair) remaining;
-	parameters.add(evaluateFully(remainingPair.getCar(), executionManager, executionEnvironment, null));
+        parameters.add(
+            evaluateFully(remainingPair.getCar(), executionManager, executionEnvironment, null));
         remaining = remainingPair.getCdr();
       }
-      final Map<ScmSymbol, ScmValue> bindings =
-          procedure.getParameterList().getExecutionBindings(parameters);
 
       if (procedure instanceof ScmManagedProcedure) {
         final ScmStackFrame frame =
-            ((ScmManagedProcedure) procedure).getExecutionStackFrame(bindings);
+            ((ScmManagedProcedure) procedure).getExecutionStackFrame(parameters);
 
         return Result.ofContinuing(ScmStackFrame.builder().inherit(frame).parent(context).build());
       }
-      return Result.ofCompleted(procedure.apply(bindings));
+      return Result.ofCompleted(procedure.apply(parameters));
     } else if (expression instanceof ScmSymbol) {
-      final Optional<ScmValue> value = executionEnvironment.get((ScmSymbol) expression);
+      final ScmSymbol symbol = (ScmSymbol) expression;
+      final Optional<ScmValue> value = executionEnvironment.get(symbol);
       if (!value.isPresent()) {
-        throw new IllegalArgumentException("variable not bound");
+        throw new IllegalArgumentException("variable not bound: " + symbol);
       }
       return Result.ofCompleted(value.get());
     }

@@ -45,6 +45,10 @@ public class ScmParameterList {
     return new Builder();
   }
 
+  public static ScmParameterList empty() {
+    return new ScmParameterList(Collections.emptyList(), null);
+  }
+
   public List<ScmSymbol> getRequired() {
     return required;
   }

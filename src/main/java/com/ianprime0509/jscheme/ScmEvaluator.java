@@ -4,7 +4,7 @@ import com.ianprime0509.jscheme.types.ScmEnvironment;
 import com.ianprime0509.jscheme.types.ScmValue;
 
 public interface ScmEvaluator {
-  static ScmEvaluator newDefaultEvaluator() {
+  static ScmManagedEvaluator newDefaultEvaluator() {
     return new ScmDefaultEvaluator();
   }
 

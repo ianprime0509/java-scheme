@@ -16,14 +16,6 @@ class ScmDefaultInterpreter implements ScmInterpreter {
     evaluator = ScmEvaluator.newDefaultEvaluator();
 
     interactionEnvironment = ScmEnvironment.empty();
-    interactionEnvironment.define(
-        ScmSymbol.of("display"),
-        ScmProcedure.fromLambda(
-            ScmParameterList.builder().required(ScmSymbol.of("value")).build(),
-            env -> {
-              System.out.println(env.get(ScmSymbol.of("value")).get());
-              return ScmNil.get();
-            }));
   }
 
   @Override

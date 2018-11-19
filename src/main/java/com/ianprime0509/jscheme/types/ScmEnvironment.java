@@ -48,7 +48,13 @@ public final class ScmEnvironment implements ScmValue {
         return Optional.empty();
       }
       current = current.parent;
+      value = current.bindings.get(name);
     }
     return Optional.of(value);
+  }
+
+  @Override
+  public String toString() {
+    return bindings.toString() + (parent != null ? " -> " + parent.toString() : "");
   }
 }

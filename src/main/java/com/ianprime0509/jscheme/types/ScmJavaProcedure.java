@@ -1,38 +1,27 @@
 package com.ianprime0509.jscheme.types;
 
-import java.util.Map;
 import java.util.function.Function;
 
-class ScmJavaProcedure implements ScmProcedure {
-  private final ScmEnvironment lexicalEnvironment;
-
-  private final ScmParameterList parameterList;
-
+/**
+ * An implementation of {@link ScmProcedure} that derives its functionality from a native Java
+ * method (namely, an implementation of {@code Function<ScmEnvironment, ScmValue>}).
+ */
+class ScmJavaProcedure extends ScmAbstractProcedure {
   private final Function<ScmEnvironment, ScmValue> body;
 
   ScmJavaProcedure(
       final ScmEnvironment lexicalEnvironment,
       final ScmParameterList parameterList,
       final Function<ScmEnvironment, ScmValue> body) {
-    if (parameterList == null) {
-      throw new IllegalArgumentException("parameterList must not be null");
-    }
+    super(lexicalEnvironment, parameterList);
     if (body == null) {
       throw new IllegalArgumentException("body must not be null");
     }
-    this.lexicalEnvironment = lexicalEnvironment;
-    this.parameterList = parameterList;
     this.body = body;
   }
 
   @Override
-  public ScmValue apply(Map<ScmSymbol, ScmValue> bindings) {
-    final ScmEnvironment executionEnvironment = ScmEnvironment.of(lexicalEnvironment, bindings);
+  public ScmValue apply(final ScmEnvironment executionEnvironment) {
     return body.apply(executionEnvironment);
-  }
-
-  @Override
-  public ScmParameterList getParameterList() {
-    return parameterList;
   }
 }

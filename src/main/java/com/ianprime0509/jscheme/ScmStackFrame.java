@@ -1,6 +1,7 @@
 package com.ianprime0509.jscheme;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Queue;
 
 import com.ianprime0509.jscheme.types.ScmEnvironment;
@@ -50,6 +51,7 @@ public class ScmStackFrame {
     public Builder inherit(final ScmStackFrame inherited) {
       parent(inherited.getParent());
       executingProcedure(inherited.getExecutingProcedure());
+      executionEnvironment(inherited.getExecutionEnvironment());
       expressions(inherited.getExpressions());
       return this;
     }
@@ -93,6 +95,10 @@ public class ScmStackFrame {
 
   public ScmEnvironment getExecutionEnvironment() {
     return executionEnvironment;
+  }
+
+  public Queue<ScmValue> getExpressions() {
+    return new ArrayDeque<>(expressions);
   }
 
   public boolean hasExpression() {
