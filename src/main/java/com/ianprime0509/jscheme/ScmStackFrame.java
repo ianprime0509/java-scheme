@@ -1,7 +1,6 @@
 package com.ianprime0509.jscheme;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.Queue;
 
 import com.ianprime0509.jscheme.types.ScmEnvironment;
