@@ -1,12 +1,20 @@
 package com.ianprime0509.jscheme;
 
-import com.ianprime0509.jscheme.types.ScmEnvironment;
 import com.ianprime0509.jscheme.types.ScmValue;
 
 public interface ScmEvaluator {
-  static ScmManagedEvaluator newDefaultEvaluator() {
+  static ScmEvaluator newDefaultEvaluator() {
     return new ScmDefaultEvaluator();
   }
 
-  ScmValue evaluate(ScmValue expression, ScmEnvironment evaluationEnvironment);
+  ScmEvaluationResult evaluate(
+      ScmValue expression, ScmExecutionManager executionManager, ScmStackFrame context);
+
+  default ScmValue evaluateFully(
+      ScmValue expression, ScmExecutionManager executionManager, ScmStackFrame context) {
+    final ScmEvaluationResult result = evaluate(expression, executionManager, context);
+    return result.isCompleted()
+        ? result.getCompleted()
+        : executionManager.execute(result.getContinuing(), this);
+  }
 }

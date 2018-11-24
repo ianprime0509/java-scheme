@@ -2,20 +2,19 @@ package com.ianprime0509.jscheme;
 
 import com.ianprime0509.jscheme.types.ScmValue;
 
-public interface ScmManagedEvaluator extends ScmEvaluator {
-  class Result {
+public class ScmEvaluationResult {
     private final Object value;
 
-    private Result(final Object value) {
+    private ScmEvaluationResult(final Object value) {
       this.value = value;
     }
 
-    public static Result ofCompleted(ScmValue value) {
-      return new Result(value);
+    public static ScmEvaluationResult ofCompleted(ScmValue value) {
+      return new ScmEvaluationResult(value);
     }
 
-    public static Result ofContinuing(ScmStackFrame value) {
-      return new Result(value);
+    public static ScmEvaluationResult ofContinuing(ScmStackFrame value) {
+      return new ScmEvaluationResult(value);
     }
 
     public boolean isCompleted() {
@@ -35,8 +34,4 @@ public interface ScmManagedEvaluator extends ScmEvaluator {
       }
       return (ScmStackFrame) value;
     }
-  }
-
-  Result evaluateManaged(
-      ScmValue expression, ScmExecutionManager executionManager, ScmStackFrame context);
 }

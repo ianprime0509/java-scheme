@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
 
+import com.ianprime0509.jscheme.ScmCallStackFrame;
+
 /**
  * A basic interface for Scheme procedure types.
  *
@@ -70,7 +72,7 @@ public interface ScmProcedure extends ScmValue {
    * @return a procedure defined in terms of the given Scheme expressions
    * @see #fromScheme(ScmEnvironment, ScmParameterList, Queue)
    */
-  static ScmManagedProcedure fromScheme(
+  static ScmProcedure fromScheme(
       final ScmParameterList parameterList, final Queue<ScmValue> body) {
     return fromScheme(null, parameterList, body);
   }
@@ -92,7 +94,7 @@ public interface ScmProcedure extends ScmValue {
    *     Must not be {@code null}.
    * @return a procedure defined in terms of the given Scheme expressions
    */
-  static ScmManagedProcedure fromScheme(
+  static ScmProcedure fromScheme(
       final ScmEnvironment lexicalEnvironment,
       final ScmParameterList parameterList,
       final Queue<ScmValue> body) {
@@ -105,15 +107,13 @@ public interface ScmProcedure extends ScmValue {
    * <p>It is the responsibility of the implementing class to ensure that the given parameters
    * satisfy the requirements of the procedure's parameter list, as no such checking is guaranteed
    * to occur before this method is called. To avoid implementing this behavior manually,
-   * implementors may choose to extends {@link ScmAbstractProcedure}, which handles the details of
+   * implementors may choose to extend {@link ScmAbstractProcedure}, which handles the details of
    * checking the parameters and constructing the execution environment.
    *
    * @param parameters the parameters to which to apply the procedure. Must not be {@code null}.
-   * @return the return value of the procedure. This must not be {@code null}; in this
-   *     implementation of Scheme, every procedure must return some value (a good default choice
-   *     would be {@link ScmNil}).
+   * @return a {@link ScmCallStackFrame} representing the initial state of the procedure
    */
-  ScmValue apply(List<ScmValue> parameters);
+  ScmCallStackFrame apply(List<ScmValue> parameters);
 
   /**
    * Returns the parameter list of the procedure.
