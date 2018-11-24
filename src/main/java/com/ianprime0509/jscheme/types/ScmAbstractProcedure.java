@@ -1,5 +1,7 @@
 package com.ianprime0509.jscheme.types;
 
+import com.ianprime0509.jscheme.ScmCallStackFrame;
+import com.ianprime0509.jscheme.ScmStackFrame;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +51,8 @@ public abstract class ScmAbstractProcedure implements ScmProcedure {
    *     lexical environment as its parent
    * @return the return value of the procedure
    */
-  public abstract ScmValue apply(ScmEnvironment executionEnvironment);
+  public abstract ScmCallStackFrame apply(
+      ScmEnvironment executionEnvironment, ScmStackFrame context);
 
   /**
    * Returns the execution environment of the procedure when called with the given parameters.
@@ -66,9 +69,9 @@ public abstract class ScmAbstractProcedure implements ScmProcedure {
   }
 
   @Override
-  public ScmValue apply(final List<ScmValue> parameters) {
+  public ScmCallStackFrame apply(final List<ScmValue> parameters, final ScmStackFrame context) {
     final ScmEnvironment executionEnvironment = getExecutionEnvironment(parameters);
-    return apply(executionEnvironment);
+    return apply(executionEnvironment, context);
   }
 
   @Override

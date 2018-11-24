@@ -5,6 +5,7 @@ import java.util.Queue;
 import java.util.function.Function;
 
 import com.ianprime0509.jscheme.ScmCallStackFrame;
+import com.ianprime0509.jscheme.ScmStackFrame;
 
 /**
  * A basic interface for Scheme procedure types.
@@ -113,7 +114,7 @@ public interface ScmProcedure extends ScmValue {
    * @param parameters the parameters to which to apply the procedure. Must not be {@code null}.
    * @return a {@link ScmCallStackFrame} representing the initial state of the procedure
    */
-  ScmCallStackFrame apply(List<ScmValue> parameters);
+  ScmCallStackFrame apply(List<ScmValue> parameters, ScmStackFrame context);
 
   /**
    * Returns the parameter list of the procedure.
